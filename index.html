@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description"
-    content="DSA Project — Interactive Linked List, Stack & Queue visualizer with live animations." />
+  <meta name="description" content="DSA Project — Interactive Linked List, Stack & Queue visualizer with live animations." />
   <title>DSA Project — Linked List · Stack · Queue</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
   <!-- ─── Toast container ─── -->
   <div id="toast-container"></div>
 
-  <!-- ─── Floating Particles (decorative) ─── -->
+  <!-- ─── Floating Particles ─── -->
   <div id="particles" aria-hidden="true"></div>
 
   <!-- ─── Header ─── -->
@@ -31,6 +28,30 @@
       </div>
     </div>
   </header>
+
+  <!-- ─── Global Toolbar ─── -->
+  <div id="toolbar">
+    <!-- Speed Control -->
+    <div class="toolbar-group">
+      <label class="toolbar-label" for="speed-slider">⏱️ Speed</label>
+      <input type="range" id="speed-slider" min="0.25" max="3" step="0.25" value="1" />
+      <span class="toolbar-value" id="speed-value">1×</span>
+    </div>
+    <!-- Sound Toggle -->
+    <div class="toolbar-group">
+      <label class="toolbar-label">🔊 Sound</label>
+      <button class="toggle-btn active" id="sound-toggle" aria-label="Toggle sound">ON</button>
+    </div>
+    <!-- Step Mode -->
+    <div class="toolbar-group">
+      <label class="toolbar-label">🚶 Step Mode</label>
+      <button class="toggle-btn" id="step-toggle" aria-label="Toggle step mode">OFF</button>
+    </div>
+    <!-- Next Step (visible only in step mode) -->
+    <div class="toolbar-group step-controls" id="step-controls" style="display:none;">
+      <button class="btn btn-step" id="step-next">▶ Next Step</button>
+    </div>
+  </div>
 
   <!-- ─── Tab bar ─── -->
   <nav id="tab-bar" role="tablist">
@@ -49,15 +70,12 @@
 
     <!-- ════════════ LINKED LIST ════════════ -->
     <section id="panel-linkedlist" class="panel active" role="tabpanel">
-      <!-- Info Card -->
       <div class="info-card">
         <div class="info-card-header">
           <span class="info-card-icon">📖</span>
           <h3>About Linked List</h3>
         </div>
-        <p>A <strong>Linked List</strong> is a linear data structure where elements are stored in nodes. Each node
-          contains data and a pointer to the next node. Unlike arrays, linked lists allow efficient insertion and
-          deletion at any position.</p>
+        <p>A <strong>Linked List</strong> is a linear data structure where elements are stored in nodes. Each node contains data and a pointer to the next node. Unlike arrays, linked lists allow efficient insertion and deletion at any position.</p>
         <div class="complexity-badges">
           <span class="badge badge-green">Insert: O(1) / O(n)</span>
           <span class="badge badge-red">Delete: O(1) / O(n)</span>
@@ -68,36 +86,19 @@
       <div class="controls">
         <input type="number" id="ll-input" placeholder="Enter a value…" aria-label="Linked list value" />
         <div class="btn-group">
-          <button class="btn btn-insert" id="ll-insert-beg">
-            <span class="btn-icon">⬅</span> Insert Beginning
-          </button>
-          <button class="btn btn-insert" id="ll-insert-end">
-            Insert End <span class="btn-icon">➡</span>
-          </button>
-          <button class="btn btn-delete" id="ll-delete-beg">
-            <span class="btn-icon">✕</span> Delete Beginning
-          </button>
-          <button class="btn btn-delete" id="ll-delete-end">
-            Delete End <span class="btn-icon">✕</span>
-          </button>
-          <button class="btn btn-display" id="ll-display">
-            <span class="btn-icon">👁</span> Display
-          </button>
+          <button class="btn btn-insert" id="ll-insert-beg"><span class="btn-icon">⬅</span> Insert Beginning</button>
+          <button class="btn btn-insert" id="ll-insert-end">Insert End <span class="btn-icon">➡</span></button>
+          <button class="btn btn-delete" id="ll-delete-beg"><span class="btn-icon">✕</span> Delete Beginning</button>
+          <button class="btn btn-delete" id="ll-delete-end">Delete End <span class="btn-icon">✕</span></button>
+          <button class="btn btn-display" id="ll-display"><span class="btn-icon">👁</span> Display</button>
         </div>
       </div>
       <div class="viz-label">Linked List Visualization</div>
       <div class="visualization" id="ll-viz"></div>
       <div class="stats-row">
-        <div class="stat-card">
-          <span class="stat-value" id="ll-count">0</span>
-          <span class="stat-label">Nodes</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" id="ll-ops">0</span>
-          <span class="stat-label">Operations</span>
-        </div>
+        <div class="stat-card"><span class="stat-value" id="ll-count">0</span><span class="stat-label">Nodes</span></div>
+        <div class="stat-card"><span class="stat-value" id="ll-ops">0</span><span class="stat-label">Operations</span></div>
       </div>
-      <!-- Operation Log -->
       <div class="log-panel">
         <div class="log-header"><span class="log-icon">📋</span> Operation Log</div>
         <div class="log-body" id="ll-log"><span class="log-empty">No operations yet…</span></div>
@@ -111,9 +112,7 @@
           <span class="info-card-icon">📖</span>
           <h3>About Stack</h3>
         </div>
-        <p>A <strong>Stack</strong> follows the <em>Last In, First Out (LIFO)</em> principle. Think of a stack of plates
-          — you can only add or remove the top plate. Stacks are used in function calls, undo mechanisms, and expression
-          evaluation.</p>
+        <p>A <strong>Stack</strong> follows the <em>Last In, First Out (LIFO)</em> principle. Think of a stack of plates — you can only add or remove the top plate. Stacks are used in function calls, undo mechanisms, and expression evaluation.</p>
         <div class="complexity-badges">
           <span class="badge badge-green">Push: O(1)</span>
           <span class="badge badge-red">Pop: O(1)</span>
@@ -124,32 +123,17 @@
       <div class="controls">
         <input type="number" id="stack-input" placeholder="Enter a value…" aria-label="Stack value" />
         <div class="btn-group">
-          <button class="btn btn-insert" id="stack-push">
-            <span class="btn-icon">⬆</span> Push
-          </button>
-          <button class="btn btn-delete" id="stack-pop">
-            <span class="btn-icon">⬇</span> Pop
-          </button>
-          <button class="btn btn-display" id="stack-display">
-            <span class="btn-icon">👁</span> Display
-          </button>
+          <button class="btn btn-insert" id="stack-push"><span class="btn-icon">⬆</span> Push</button>
+          <button class="btn btn-delete" id="stack-pop"><span class="btn-icon">⬇</span> Pop</button>
+          <button class="btn btn-display" id="stack-display"><span class="btn-icon">👁</span> Display</button>
         </div>
       </div>
       <div class="viz-label">Stack Visualization <span class="capacity">(Max 10)</span></div>
       <div class="visualization visualization-stack" id="stack-viz"></div>
       <div class="stats-row">
-        <div class="stat-card">
-          <span class="stat-value" id="stack-top">-1</span>
-          <span class="stat-label">Top Index</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" id="stack-size">0</span>
-          <span class="stat-label">Size / 10</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" id="stack-ops">0</span>
-          <span class="stat-label">Operations</span>
-        </div>
+        <div class="stat-card"><span class="stat-value" id="stack-top">-1</span><span class="stat-label">Top Index</span></div>
+        <div class="stat-card"><span class="stat-value" id="stack-size">0</span><span class="stat-label">Size / 10</span></div>
+        <div class="stat-card"><span class="stat-value" id="stack-ops">0</span><span class="stat-label">Operations</span></div>
       </div>
       <div class="log-panel">
         <div class="log-header"><span class="log-icon">📋</span> Operation Log</div>
@@ -164,9 +148,7 @@
           <span class="info-card-icon">📖</span>
           <h3>About Queue</h3>
         </div>
-        <p>A <strong>Queue</strong> follows the <em>First In, First Out (FIFO)</em> principle. Like a line at a ticket
-          counter — the first person to arrive is the first to be served. Queues are used in scheduling, BFS, and
-          buffering.</p>
+        <p>A <strong>Queue</strong> follows the <em>First In, First Out (FIFO)</em> principle. Like a line at a ticket counter — the first person to arrive is the first to be served. Queues are used in scheduling, BFS, and buffering.</p>
         <div class="complexity-badges">
           <span class="badge badge-green">Enqueue: O(1)</span>
           <span class="badge badge-red">Dequeue: O(1)</span>
@@ -177,36 +159,18 @@
       <div class="controls">
         <input type="number" id="queue-input" placeholder="Enter a value…" aria-label="Queue value" />
         <div class="btn-group">
-          <button class="btn btn-insert" id="queue-enqueue">
-            <span class="btn-icon">➡</span> Enqueue
-          </button>
-          <button class="btn btn-delete" id="queue-dequeue">
-            <span class="btn-icon">⬅</span> Dequeue
-          </button>
-          <button class="btn btn-display" id="queue-display">
-            <span class="btn-icon">👁</span> Display
-          </button>
+          <button class="btn btn-insert" id="queue-enqueue"><span class="btn-icon">➡</span> Enqueue</button>
+          <button class="btn btn-delete" id="queue-dequeue"><span class="btn-icon">⬅</span> Dequeue</button>
+          <button class="btn btn-display" id="queue-display"><span class="btn-icon">👁</span> Display</button>
         </div>
       </div>
       <div class="viz-label">Queue Visualization <span class="capacity">(Max 10)</span></div>
       <div class="visualization visualization-queue" id="queue-viz"></div>
       <div class="stats-row">
-        <div class="stat-card">
-          <span class="stat-value" id="queue-front">-1</span>
-          <span class="stat-label">Front</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" id="queue-rear">-1</span>
-          <span class="stat-label">Rear</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" id="queue-size">0</span>
-          <span class="stat-label">Size / 10</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" id="queue-ops">0</span>
-          <span class="stat-label">Operations</span>
-        </div>
+        <div class="stat-card"><span class="stat-value" id="queue-front">-1</span><span class="stat-label">Front</span></div>
+        <div class="stat-card"><span class="stat-value" id="queue-rear">-1</span><span class="stat-label">Rear</span></div>
+        <div class="stat-card"><span class="stat-value" id="queue-size">0</span><span class="stat-label">Size / 10</span></div>
+        <div class="stat-card"><span class="stat-value" id="queue-ops">0</span><span class="stat-label">Operations</span></div>
       </div>
       <div class="log-panel">
         <div class="log-header"><span class="log-icon">📋</span> Operation Log</div>
@@ -217,12 +181,10 @@
   </main>
 
   <footer id="app-footer">
-    <p>Built by <strong>Subham Kumar (25BCS10111)</strong> and <strong>Subham Panigarhi (25BCS12639)</strong></p>
-    <p><strong>Section: 25BCS205(A)</strong></p>
-    <p>For <strong>Navreet Kaur Mam</strong></p>
+    <p>Built with ❤️ by <strong>Subham Kumar</strong> and <strong>Subham Panigarhi</strong></p>
+    <p>Submitted to <strong>Navreet Kaur Mam</strong></p>
   </footer>
 
   <script src="app.js"></script>
 </body>
-
 </html>

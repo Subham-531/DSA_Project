@@ -1,26 +1,182 @@
 /* ══════════════════════════════════════════════════════
    DSA Project — Application Logic
-   Theme toggle, ripple, stats pop, operation logs,
-   staggered animations, input shake
+   Speed control · Step mode · Sound effects
+   Theme toggle · Ripple · Stats · Logs
    ══════════════════════════════════════════════════════ */
 
-// ─── Floating particles ───
+// ─── Particles ───
 (function initParticles() {
-  const container = document.getElementById('particles');
+  const c = document.getElementById('particles');
   for (let i = 0; i < 35; i++) {
     const p = document.createElement('div');
     p.className = 'particle';
     p.style.left = Math.random() * 100 + '%';
-    const size = 3 + Math.random() * 6;
-    p.style.width = p.style.height = size + 'px';
+    const s = 3 + Math.random() * 6;
+    p.style.width = p.style.height = s + 'px';
     p.style.animationDuration = (14 + Math.random() * 22) + 's';
     p.style.animationDelay = (Math.random() * 18) + 's';
     p.style.opacity = (.3 + Math.random() * .4).toString();
-    container.appendChild(p);
+    c.appendChild(p);
   }
 })();
 
-// ─── Theme Toggle ───
+// ═══════════════════════════════════════
+// GLOBAL SETTINGS
+// ═══════════════════════════════════════
+const settings = {
+  speed: 1,         // animation speed multiplier
+  soundOn: true,    // sound effects toggle
+  stepMode: false,  // step-by-step mode
+  _stepResolve: null,
+  _stepQueue: [],
+
+  // returns animation duration adjusted for speed
+  dur(base) {
+    return base / this.speed;
+  }
+};
+
+// ─── Speed Slider ───
+const speedSlider = document.getElementById('speed-slider');
+const speedValue = document.getElementById('speed-value');
+speedSlider.addEventListener('input', () => {
+  settings.speed = parseFloat(speedSlider.value);
+  speedValue.textContent = settings.speed + '×';
+  document.documentElement.style.setProperty('--speed', settings.speed);
+});
+
+// ─── Sound Toggle ───
+const soundToggle = document.getElementById('sound-toggle');
+soundToggle.addEventListener('click', () => {
+  settings.soundOn = !settings.soundOn;
+  soundToggle.textContent = settings.soundOn ? 'ON' : 'OFF';
+  soundToggle.classList.toggle('active', settings.soundOn);
+  playSound('click');
+});
+
+// ─── Step Mode Toggle ───
+const stepToggle = document.getElementById('step-toggle');
+const stepControls = document.getElementById('step-controls');
+const stepNextBtn = document.getElementById('step-next');
+
+stepToggle.addEventListener('click', () => {
+  settings.stepMode = !settings.stepMode;
+  stepToggle.textContent = settings.stepMode ? 'ON' : 'OFF';
+  stepToggle.classList.toggle('active', settings.stepMode);
+  stepControls.style.display = settings.stepMode ? 'flex' : 'none';
+  if (settings.stepMode) {
+    showToast('Step Mode ON — click "Next Step" to advance', 'info');
+  } else {
+    showToast('Step Mode OFF — operations run automatically', 'info');
+    // resolve any pending step
+    if (settings._stepResolve) { settings._stepResolve(); settings._stepResolve = null; }
+  }
+});
+
+stepNextBtn.addEventListener('click', () => {
+  if (settings._stepResolve) {
+    playSound('click');
+    settings._stepResolve();
+    settings._stepResolve = null;
+  }
+});
+
+// Wait for step button if step mode is on
+function waitForStep(label) {
+  if (!settings.stepMode) return Promise.resolve();
+  showToast(`⏸ Step: ${label} — click "Next Step"`, 'info');
+  return new Promise(resolve => {
+    settings._stepResolve = resolve;
+  });
+}
+
+// ═══════════════════════════════════════
+// SOUND EFFECTS (Web Audio API — no files)
+// ═══════════════════════════════════════
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(type) {
+  if (!settings.soundOn) return;
+  // Resume context if suspended (browser autoplay policy)
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  const now = audioCtx.currentTime;
+
+  switch (type) {
+    case 'insert':
+    case 'push':
+    case 'enqueue':
+      // pleasant ascending chime
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523, now);        // C5
+      osc.frequency.linearRampToValueAtTime(784, now + 0.1); // G5
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+      osc.start(now);
+      osc.stop(now + 0.3);
+      break;
+
+    case 'delete':
+    case 'pop':
+    case 'dequeue':
+      // descending tone
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(659, now);        // E5
+      osc.frequency.linearRampToValueAtTime(330, now + 0.15); // E4
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+      osc.start(now);
+      osc.stop(now + 0.25);
+      break;
+
+    case 'error':
+      // buzz
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(150, now);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+      osc.start(now);
+      osc.stop(now + 0.2);
+      break;
+
+    case 'click':
+      // soft tick
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1200, now);
+      gain.gain.setValueAtTime(0.06, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+      osc.start(now);
+      osc.stop(now + 0.06);
+      break;
+
+    case 'display':
+      // soft chime
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(880, now);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+      osc.start(now);
+      osc.stop(now + 0.15);
+      break;
+
+    default:
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(600, now);
+      gain.gain.setValueAtTime(0.05, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+      osc.start(now);
+      osc.stop(now + 0.1);
+  }
+}
+
+// ═══════════════════════════════════════
+// THEME TOGGLE
+// ═══════════════════════════════════════
 const themeToggle = document.getElementById('theme-toggle');
 const themeIcon = document.getElementById('theme-icon');
 
@@ -31,18 +187,20 @@ function setTheme(theme) {
 }
 
 themeToggle.addEventListener('click', () => {
+  playSound('click');
   themeToggle.classList.add('spin');
   setTimeout(() => themeToggle.classList.remove('spin'), 500);
   const current = document.documentElement.getAttribute('data-theme');
   setTheme(current === 'dark' ? 'light' : 'dark');
 });
 
-const saved = localStorage.getItem('dsa-theme');
-if (saved) setTheme(saved);
+const savedTheme = localStorage.getItem('dsa-theme');
+if (savedTheme) setTheme(savedTheme);
 
-// ─── Button Ripple Effect ───
+// ─── Button Ripple ───
 document.querySelectorAll('.btn').forEach(btn => {
-  btn.addEventListener('click', function (e) {
+  btn.addEventListener('click', function(e) {
+    playSound('click');
     const ripple = document.createElement('span');
     ripple.className = 'ripple';
     const rect = this.getBoundingClientRect();
@@ -55,7 +213,7 @@ document.querySelectorAll('.btn').forEach(btn => {
   });
 });
 
-// ─── Utility: Toast ───
+// ─── Utilities ───
 function showToast(message, type = 'info') {
   const container = document.getElementById('toast-container');
   const t = document.createElement('div');
@@ -65,12 +223,12 @@ function showToast(message, type = 'info') {
   setTimeout(() => { if (t.parentNode) t.remove(); }, 3200);
 }
 
-// ─── Utility: get & validate input ───
 function getInputValue(id) {
   const el = document.getElementById(id);
   const v = el.value.trim();
   if (v === '' || isNaN(Number(v))) {
     showToast('Please enter a valid number.', 'error');
+    playSound('error');
     el.classList.add('shake');
     setTimeout(() => el.classList.remove('shake'), 500);
     return null;
@@ -79,18 +237,15 @@ function getInputValue(id) {
   return Number(v);
 }
 
-// ─── Utility: timestamp ───
 function timeStamp() {
   const d = new Date();
   return d.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 
-// ─── Utility: add log entry ───
 function addLog(logId, message, type = 'info') {
   const body = document.getElementById(logId);
   const empty = body.querySelector('.log-empty');
   if (empty) empty.remove();
-
   const entry = document.createElement('div');
   entry.className = `log-entry log-${type}`;
   entry.innerHTML = `<span class="log-time">${timeStamp()}</span><span class="log-msg">${message}</span>`;
@@ -98,12 +253,10 @@ function addLog(logId, message, type = 'info') {
   while (body.children.length > 50) body.lastChild.remove();
 }
 
-// ─── Utility: animate stat value ───
 function animateStat(elementId, value) {
   const el = document.getElementById(elementId);
   el.textContent = value;
   el.classList.remove('pop');
-  // force reflow
   void el.offsetWidth;
   el.classList.add('pop');
   setTimeout(() => el.classList.remove('pop'), 500);
@@ -114,6 +267,7 @@ function animateStat(elementId, value) {
 // ═══════════════════════════════════════
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
+    playSound('click');
     document.querySelectorAll('.tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
@@ -129,56 +283,66 @@ const ll = {
   head: null,
   opsCount: 0,
 
-  insertBeginning(val) {
+  async insertBeginning(val) {
+    await waitForStep(`Insert ${val} at beginning`);
     this.head = { data: val, next: this.head };
     this.opsCount++;
+    playSound('insert');
     showToast(`Inserted ${val} at beginning`, 'success');
     addLog('ll-log', `Insert <strong>${val}</strong> at beginning`, 'success');
     this.render('insert-beg');
   },
 
-  insertEnd(val) {
+  async insertEnd(val) {
+    await waitForStep(`Insert ${val} at end`);
     const node = { data: val, next: null };
     if (!this.head) { this.head = node; }
     else { let t = this.head; while (t.next) t = t.next; t.next = node; }
     this.opsCount++;
+    playSound('insert');
     showToast(`Inserted ${val} at end`, 'success');
     addLog('ll-log', `Insert <strong>${val}</strong> at end`, 'success');
     this.render('insert-end');
   },
 
-  deleteBeginning() {
-    if (!this.head) { showToast('List is empty!', 'error'); addLog('ll-log', 'Delete failed — list empty', 'error'); return; }
+  async deleteBeginning() {
+    if (!this.head) { playSound('error'); showToast('List is empty!', 'error'); addLog('ll-log', 'Delete failed — list empty', 'error'); return; }
     const val = this.head.data;
+    await waitForStep(`Delete ${val} from beginning`);
     this._animateDelete(0, () => {
       this.head = this.head.next;
       this.opsCount++;
+      playSound('delete');
       showToast(`Deleted ${val} from beginning`, 'success');
       addLog('ll-log', `Delete <strong>${val}</strong> from beginning`, 'success');
       this.render();
     });
   },
 
-  deleteEnd() {
-    if (!this.head) { showToast('List is empty!', 'error'); addLog('ll-log', 'Delete failed — list empty', 'error'); return; }
+  async deleteEnd() {
+    if (!this.head) { playSound('error'); showToast('List is empty!', 'error'); addLog('ll-log', 'Delete failed — list empty', 'error'); return; }
     const count = this._count();
     if (!this.head.next) {
       const val = this.head.data;
+      await waitForStep(`Delete ${val} from end`);
       this._animateDelete(0, () => {
         this.head = null;
         this.opsCount++;
+        playSound('delete');
         showToast(`Deleted ${val} from end`, 'success');
         addLog('ll-log', `Delete <strong>${val}</strong> from end`, 'success');
         this.render();
       });
       return;
     }
+    await waitForStep('Delete from end');
     this._animateDelete(count - 1, () => {
       let t = this.head;
       while (t.next.next) t = t.next;
       const val = t.next.data;
       t.next = null;
       this.opsCount++;
+      playSound('delete');
       showToast(`Deleted ${val} from end`, 'success');
       addLog('ll-log', `Delete <strong>${val}</strong> from end`, 'success');
       this.render();
@@ -186,6 +350,7 @@ const ll = {
   },
 
   display() {
+    playSound('display');
     if (!this.head) { showToast('List is empty!', 'info'); addLog('ll-log', 'Display — list is empty', 'info'); }
     else { addLog('ll-log', `Display — ${this._count()} node(s)`, 'info'); }
     this.render();
@@ -200,7 +365,7 @@ const ll = {
       const node = wrappers[index].querySelector('.ll-node');
       if (node) node.classList.add('delete-highlight');
       wrappers[index].classList.add('deleting');
-      setTimeout(cb, 450);
+      setTimeout(cb, settings.dur(450));
     } else { cb(); }
   },
 
@@ -220,7 +385,6 @@ const ll = {
     while (t) {
       const wrapper = document.createElement('div');
       wrapper.className = 'll-node-wrapper';
-      // staggered entrance delay
       wrapper.style.animationDelay = (idx * 0.08) + 's';
 
       const box = document.createElement('div');
@@ -264,7 +428,7 @@ const ll = {
     if (highlightType) {
       setTimeout(() => {
         viz.querySelectorAll('.insert-highlight').forEach(n => n.classList.remove('insert-highlight'));
-      }, 1200);
+      }, settings.dur(1200));
     }
   }
 };
@@ -284,29 +448,35 @@ const stack = {
   top: -1,
   opsCount: 0,
 
-  push(val) {
+  async push(val) {
     if (this.top === this.MAX - 1) {
+      playSound('error');
       showToast('Stack Overflow! Maximum size (10) reached.', 'error');
       addLog('stack-log', `Push <strong>${val}</strong> failed — OVERFLOW`, 'error');
       return;
     }
+    await waitForStep(`Push ${val}`);
     this.arr[++this.top] = val;
     this.opsCount++;
+    playSound('push');
     showToast(`Pushed ${val} onto stack`, 'success');
     addLog('stack-log', `Push <strong>${val}</strong> → top=${this.top}`, 'success');
     this.render('push');
   },
 
-  pop() {
+  async pop() {
     if (this.top === -1) {
+      playSound('error');
       showToast('Stack Underflow! Stack is empty.', 'error');
       addLog('stack-log', 'Pop failed — UNDERFLOW', 'error');
       return;
     }
     const val = this.arr[this.top];
+    await waitForStep(`Pop ${val}`);
     this._animatePop(() => {
       this.top--;
       this.opsCount++;
+      playSound('pop');
       showToast(`Popped ${val}`, 'success');
       addLog('stack-log', `Pop <strong>${val}</strong> → top=${this.top}`, 'success');
       this.render();
@@ -314,6 +484,7 @@ const stack = {
   },
 
   display() {
+    playSound('display');
     if (this.top === -1) { showToast('Stack is empty!', 'info'); addLog('stack-log', 'Display — stack empty', 'info'); }
     else { addLog('stack-log', `Display — ${this.top + 1} element(s)`, 'info'); }
     this.render();
@@ -325,7 +496,7 @@ const stack = {
     if (blocks.length > 0) {
       const topBlock = blocks[blocks.length - 1];
       topBlock.classList.add('delete-highlight', 'deleting');
-      setTimeout(cb, 420);
+      setTimeout(cb, settings.dur(400));
     } else { cb(); }
   },
 
@@ -352,7 +523,6 @@ const stack = {
         const block = document.createElement('div');
         block.className = 'stack-block';
         block.textContent = this.arr[i];
-        // staggered delay
         block.style.animationDelay = (i * 0.06) + 's';
         if (i === this.top) {
           const topLbl = document.createElement('span');
@@ -372,7 +542,7 @@ const stack = {
     if (highlightType) {
       setTimeout(() => {
         viz.querySelectorAll('.insert-highlight').forEach(n => n.classList.remove('insert-highlight'));
-      }, 1200);
+      }, settings.dur(1200));
     }
   }
 };
@@ -391,31 +561,37 @@ const queue = {
   rear: -1,
   opsCount: 0,
 
-  enqueue(val) {
+  async enqueue(val) {
     if (this.rear === this.MAX - 1) {
+      playSound('error');
       showToast('Queue Full! Maximum size (10) reached.', 'error');
       addLog('queue-log', `Enqueue <strong>${val}</strong> failed — FULL`, 'error');
       return;
     }
+    await waitForStep(`Enqueue ${val}`);
     if (this.front === -1) this.front = 0;
     this.arr[++this.rear] = val;
     this.opsCount++;
+    playSound('enqueue');
     showToast(`Enqueued ${val}`, 'success');
     addLog('queue-log', `Enqueue <strong>${val}</strong> → rear=${this.rear}`, 'success');
     this.render('enqueue');
   },
 
-  dequeue() {
+  async dequeue() {
     if (this.front === -1 || this.front > this.rear) {
+      playSound('error');
       showToast('Queue Empty! Nothing to dequeue.', 'error');
       addLog('queue-log', 'Dequeue failed — EMPTY', 'error');
       return;
     }
     const val = this.arr[this.front];
+    await waitForStep(`Dequeue ${val}`);
     this._animateDequeue(() => {
       this.front++;
       this.opsCount++;
       if (this.front > this.rear) { this.front = -1; this.rear = -1; }
+      playSound('dequeue');
       showToast(`Dequeued ${val}`, 'success');
       addLog('queue-log', `Dequeue <strong>${val}</strong> → front=${this.front}`, 'success');
       this.render();
@@ -423,6 +599,7 @@ const queue = {
   },
 
   display() {
+    playSound('display');
     const empty = this.front === -1 || this.front > this.rear;
     if (empty) { showToast('Queue is empty!', 'info'); addLog('queue-log', 'Display — queue empty', 'info'); }
     else { addLog('queue-log', `Display — ${this.rear - this.front + 1} element(s)`, 'info'); }
@@ -434,7 +611,7 @@ const queue = {
     const blocks = viz.querySelectorAll('.queue-block');
     if (blocks.length > 0) {
       blocks[0].classList.add('delete-highlight', 'deleting');
-      setTimeout(cb, 420);
+      setTimeout(cb, settings.dur(400));
     } else { cb(); }
   },
 
@@ -458,9 +635,7 @@ const queue = {
       const block = document.createElement('div');
       block.className = 'queue-block';
       block.textContent = this.arr[i];
-      // staggered delay
       block.style.animationDelay = (blockIdx * 0.07) + 's';
-
       if (i === this.front) {
         const fl = document.createElement('span');
         fl.className = 'queue-ptr-label front-label';
@@ -486,7 +661,7 @@ const queue = {
     if (highlightType) {
       setTimeout(() => {
         viz.querySelectorAll('.insert-highlight').forEach(n => n.classList.remove('insert-highlight'));
-      }, 1200);
+      }, settings.dur(1200));
     }
   }
 };
@@ -495,11 +670,10 @@ document.getElementById('queue-enqueue').addEventListener('click', () => { const
 document.getElementById('queue-dequeue').addEventListener('click', () => queue.dequeue());
 document.getElementById('queue-display').addEventListener('click', () => queue.display());
 
-// ─── Enter key support on all inputs ───
+// ─── Enter key support ───
 ['ll-input', 'stack-input', 'queue-input'].forEach(id => {
   document.getElementById(id).addEventListener('keydown', e => {
     if (e.key === 'Enter') {
-      // click the first insert/push/enqueue button
       const panel = e.target.closest('.panel');
       const firstBtn = panel.querySelector('.btn-insert');
       if (firstBtn) firstBtn.click();
