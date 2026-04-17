@@ -19,7 +19,6 @@ An interactive web application that visually simulates **Linked List**, **Stack*
 - ✨ **Rich CSS animations** — ripple, glow, stagger, bounce, shimmer
 - 🔊 **Sound effects** — audio feedback on every operation
 - ⏱️ **Animation Speed Control** — slider from 0.25x to 3x speed
-- 🚶 **Step-by-step Mode** — pause and step through operations manually
 - 📋 **Operation Log** — timestamped log of every action
 - 📊 **Stats Dashboard** — live node count, operation counter
 - 📖 **Info Cards** — algorithm descriptions with time complexity badges
@@ -87,7 +86,6 @@ Horizontal blocks with bouncing FRONT/REAR pointer labels.
 | Switch Structure | Click tab (Linked List / Stack / Queue) |
 | Change Theme | Click 🌙/☀️ button (top-right) |
 | Adjust Speed | Move the speed slider |
-| Step Mode | Toggle "Step Mode" → click "Next Step" |
 | Submit Value | Press Enter in input field |
 
 ---

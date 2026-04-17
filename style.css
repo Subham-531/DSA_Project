@@ -181,32 +181,6 @@ body {
 }
 .toggle-btn:hover { transform: scale(1.05); }
 
-/* Step Button */
-.btn-step {
-  padding: .45rem 1rem; border: none;
-  border-radius: 50px;
-  background: linear-gradient(135deg, #f59e0b, #fbbf24);
-  color: #0b0e17; font-weight: 700; font-size: .75rem;
-  text-transform: uppercase; letter-spacing: .5px;
-  cursor: pointer; transition: var(--transition);
-  box-shadow: 0 4px 14px rgba(245,158,11,.3);
-  animation: pulseStep 1.5s ease-in-out infinite;
-}
-.btn-step:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(245,158,11,.4); }
-@keyframes pulseStep {
-  0%, 100% { box-shadow: 0 4px 14px rgba(245,158,11,.3); }
-  50% { box-shadow: 0 4px 24px rgba(245,158,11,.5); }
-}
-
-/* Step Mode Indicator */
-.step-mode-badge {
-  position: absolute; top: -8px; right: -8px;
-  background: #f59e0b; color: #0b0e17; font-size: .55rem;
-  font-weight: 800; padding: 2px 6px; border-radius: 50px;
-  text-transform: uppercase; letter-spacing: 1px;
-  animation: pulseStep 1.5s ease-in-out infinite;
-}
-
 /* ─── Tab Bar ─── */
 #tab-bar {
   position: relative; z-index: 2;

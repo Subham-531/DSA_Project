@@ -26,9 +26,6 @@
 const settings = {
   speed: 1,         // animation speed multiplier
   soundOn: true,    // sound effects toggle
-  stepMode: false,  // step-by-step mode
-  _stepResolve: null,
-  _stepQueue: [],
 
   // returns animation duration adjusted for speed
   dur(base) {
@@ -54,41 +51,7 @@ soundToggle.addEventListener('click', () => {
   playSound('click');
 });
 
-// ─── Step Mode Toggle ───
-const stepToggle = document.getElementById('step-toggle');
-const stepControls = document.getElementById('step-controls');
-const stepNextBtn = document.getElementById('step-next');
 
-stepToggle.addEventListener('click', () => {
-  settings.stepMode = !settings.stepMode;
-  stepToggle.textContent = settings.stepMode ? 'ON' : 'OFF';
-  stepToggle.classList.toggle('active', settings.stepMode);
-  stepControls.style.display = settings.stepMode ? 'flex' : 'none';
-  if (settings.stepMode) {
-    showToast('Step Mode ON — click "Next Step" to advance', 'info');
-  } else {
-    showToast('Step Mode OFF — operations run automatically', 'info');
-    // resolve any pending step
-    if (settings._stepResolve) { settings._stepResolve(); settings._stepResolve = null; }
-  }
-});
-
-stepNextBtn.addEventListener('click', () => {
-  if (settings._stepResolve) {
-    playSound('click');
-    settings._stepResolve();
-    settings._stepResolve = null;
-  }
-});
-
-// Wait for step button if step mode is on
-function waitForStep(label) {
-  if (!settings.stepMode) return Promise.resolve();
-  showToast(`⏸ Step: ${label} — click "Next Step"`, 'info');
-  return new Promise(resolve => {
-    settings._stepResolve = resolve;
-  });
-}
 
 // ═══════════════════════════════════════
 // SOUND EFFECTS (Web Audio API — no files)
@@ -283,8 +246,8 @@ const ll = {
   head: null,
   opsCount: 0,
 
-  async insertBeginning(val) {
-    await waitForStep(`Insert ${val} at beginning`);
+  insertBeginning(val) {
+    
     this.head = { data: val, next: this.head };
     this.opsCount++;
     playSound('insert');
@@ -293,8 +256,8 @@ const ll = {
     this.render('insert-beg');
   },
 
-  async insertEnd(val) {
-    await waitForStep(`Insert ${val} at end`);
+  insertEnd(val) {
+    
     const node = { data: val, next: null };
     if (!this.head) { this.head = node; }
     else { let t = this.head; while (t.next) t = t.next; t.next = node; }
@@ -305,10 +268,10 @@ const ll = {
     this.render('insert-end');
   },
 
-  async deleteBeginning() {
+  deleteBeginning() {
     if (!this.head) { playSound('error'); showToast('List is empty!', 'error'); addLog('ll-log', 'Delete failed — list empty', 'error'); return; }
     const val = this.head.data;
-    await waitForStep(`Delete ${val} from beginning`);
+    
     this._animateDelete(0, () => {
       this.head = this.head.next;
       this.opsCount++;
@@ -319,12 +282,12 @@ const ll = {
     });
   },
 
-  async deleteEnd() {
+  deleteEnd() {
     if (!this.head) { playSound('error'); showToast('List is empty!', 'error'); addLog('ll-log', 'Delete failed — list empty', 'error'); return; }
     const count = this._count();
     if (!this.head.next) {
       const val = this.head.data;
-      await waitForStep(`Delete ${val} from end`);
+      
       this._animateDelete(0, () => {
         this.head = null;
         this.opsCount++;
@@ -335,7 +298,7 @@ const ll = {
       });
       return;
     }
-    await waitForStep('Delete from end');
+    
     this._animateDelete(count - 1, () => {
       let t = this.head;
       while (t.next.next) t = t.next;
@@ -448,14 +411,14 @@ const stack = {
   top: -1,
   opsCount: 0,
 
-  async push(val) {
+  push(val) {
     if (this.top === this.MAX - 1) {
       playSound('error');
       showToast('Stack Overflow! Maximum size (10) reached.', 'error');
       addLog('stack-log', `Push <strong>${val}</strong> failed — OVERFLOW`, 'error');
       return;
     }
-    await waitForStep(`Push ${val}`);
+    
     this.arr[++this.top] = val;
     this.opsCount++;
     playSound('push');
@@ -464,7 +427,7 @@ const stack = {
     this.render('push');
   },
 
-  async pop() {
+  pop() {
     if (this.top === -1) {
       playSound('error');
       showToast('Stack Underflow! Stack is empty.', 'error');
@@ -472,7 +435,7 @@ const stack = {
       return;
     }
     const val = this.arr[this.top];
-    await waitForStep(`Pop ${val}`);
+    
     this._animatePop(() => {
       this.top--;
       this.opsCount++;
@@ -561,14 +524,14 @@ const queue = {
   rear: -1,
   opsCount: 0,
 
-  async enqueue(val) {
+  enqueue(val) {
     if (this.rear === this.MAX - 1) {
       playSound('error');
       showToast('Queue Full! Maximum size (10) reached.', 'error');
       addLog('queue-log', `Enqueue <strong>${val}</strong> failed — FULL`, 'error');
       return;
     }
-    await waitForStep(`Enqueue ${val}`);
+    
     if (this.front === -1) this.front = 0;
     this.arr[++this.rear] = val;
     this.opsCount++;
@@ -578,7 +541,7 @@ const queue = {
     this.render('enqueue');
   },
 
-  async dequeue() {
+  dequeue() {
     if (this.front === -1 || this.front > this.rear) {
       playSound('error');
       showToast('Queue Empty! Nothing to dequeue.', 'error');
@@ -586,7 +549,7 @@ const queue = {
       return;
     }
     const val = this.arr[this.front];
-    await waitForStep(`Dequeue ${val}`);
+    
     this._animateDequeue(() => {
       this.front++;
       this.opsCount++;
