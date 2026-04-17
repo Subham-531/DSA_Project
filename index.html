@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="DSA Project — Interactive Linked List, Stack & Queue visualizer with live animations." />
+  <title>DSA Project — Linked List · Stack · Queue</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- ─── Toast container ─── -->
+  <div id="toast-container"></div>
+
+  <!-- ─── Floating Particles (decorative) ─── -->
+  <div id="particles" aria-hidden="true"></div>
+
+  <!-- ─── Header ─── -->
+  <header id="app-header">
+    <div class="header-row">
+      <div class="header-left">
+        <h1>⚡ DSA Project</h1>
+        <p class="subtitle">Linked List &middot; Stack &middot; Queue</p>
+      </div>
+      <div class="header-right">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle Theme">
+          <span class="theme-icon" id="theme-icon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── Tab bar ─── -->
+  <nav id="tab-bar" role="tablist">
+    <button class="tab active" data-tab="linkedlist" role="tab" aria-selected="true" id="tab-linkedlist">
+      <span class="tab-icon">🔗</span> Linked List
+    </button>
+    <button class="tab" data-tab="stack" role="tab" aria-selected="false" id="tab-stack">
+      <span class="tab-icon">📚</span> Stack
+    </button>
+    <button class="tab" data-tab="queue" role="tab" aria-selected="false" id="tab-queue">
+      <span class="tab-icon">🚶</span> Queue
+    </button>
+  </nav>
+
+  <main id="app-main">
+
+    <!-- ════════════ LINKED LIST ════════════ -->
+    <section id="panel-linkedlist" class="panel active" role="tabpanel">
+      <!-- Info Card -->
+      <div class="info-card">
+        <div class="info-card-header">
+          <span class="info-card-icon">📖</span>
+          <h3>About Linked List</h3>
+        </div>
+        <p>A <strong>Linked List</strong> is a linear data structure where elements are stored in nodes. Each node
+          contains data and a pointer to the next node. Unlike arrays, linked lists allow efficient insertion and
+          deletion at any position.</p>
+        <div class="complexity-badges">
+          <span class="badge badge-green">Insert: O(1) / O(n)</span>
+          <span class="badge badge-red">Delete: O(1) / O(n)</span>
+          <span class="badge badge-blue">Search: O(n)</span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <input type="number" id="ll-input" placeholder="Enter a value…" aria-label="Linked list value" />
+        <div class="btn-group">
+          <button class="btn btn-insert" id="ll-insert-beg">
+            <span class="btn-icon">⬅</span> Insert Beginning
+          </button>
+          <button class="btn btn-insert" id="ll-insert-end">
+            Insert End <span class="btn-icon">➡</span>
+          </button>
+          <button class="btn btn-delete" id="ll-delete-beg">
+            <span class="btn-icon">✕</span> Delete Beginning
+          </button>
+          <button class="btn btn-delete" id="ll-delete-end">
+            Delete End <span class="btn-icon">✕</span>
+          </button>
+          <button class="btn btn-display" id="ll-display">
+            <span class="btn-icon">👁</span> Display
+          </button>
+        </div>
+      </div>
+      <div class="viz-label">Linked List Visualization</div>
+      <div class="visualization" id="ll-viz"></div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-value" id="ll-count">0</span>
+          <span class="stat-label">Nodes</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="ll-ops">0</span>
+          <span class="stat-label">Operations</span>
+        </div>
+      </div>
+      <!-- Operation Log -->
+      <div class="log-panel">
+        <div class="log-header"><span class="log-icon">📋</span> Operation Log</div>
+        <div class="log-body" id="ll-log"><span class="log-empty">No operations yet…</span></div>
+      </div>
+    </section>
+
+    <!-- ════════════ STACK ════════════ -->
+    <section id="panel-stack" class="panel" role="tabpanel">
+      <div class="info-card">
+        <div class="info-card-header">
+          <span class="info-card-icon">📖</span>
+          <h3>About Stack</h3>
+        </div>
+        <p>A <strong>Stack</strong> follows the <em>Last In, First Out (LIFO)</em> principle. Think of a stack of plates
+          — you can only add or remove the top plate. Stacks are used in function calls, undo mechanisms, and expression
+          evaluation.</p>
+        <div class="complexity-badges">
+          <span class="badge badge-green">Push: O(1)</span>
+          <span class="badge badge-red">Pop: O(1)</span>
+          <span class="badge badge-blue">Peek: O(1)</span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <input type="number" id="stack-input" placeholder="Enter a value…" aria-label="Stack value" />
+        <div class="btn-group">
+          <button class="btn btn-insert" id="stack-push">
+            <span class="btn-icon">⬆</span> Push
+          </button>
+          <button class="btn btn-delete" id="stack-pop">
+            <span class="btn-icon">⬇</span> Pop
+          </button>
+          <button class="btn btn-display" id="stack-display">
+            <span class="btn-icon">👁</span> Display
+          </button>
+        </div>
+      </div>
+      <div class="viz-label">Stack Visualization <span class="capacity">(Max 10)</span></div>
+      <div class="visualization visualization-stack" id="stack-viz"></div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-value" id="stack-top">-1</span>
+          <span class="stat-label">Top Index</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stack-size">0</span>
+          <span class="stat-label">Size / 10</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stack-ops">0</span>
+          <span class="stat-label">Operations</span>
+        </div>
+      </div>
+      <div class="log-panel">
+        <div class="log-header"><span class="log-icon">📋</span> Operation Log</div>
+        <div class="log-body" id="stack-log"><span class="log-empty">No operations yet…</span></div>
+      </div>
+    </section>
+
+    <!-- ════════════ QUEUE ════════════ -->
+    <section id="panel-queue" class="panel" role="tabpanel">
+      <div class="info-card">
+        <div class="info-card-header">
+          <span class="info-card-icon">📖</span>
+          <h3>About Queue</h3>
+        </div>
+        <p>A <strong>Queue</strong> follows the <em>First In, First Out (FIFO)</em> principle. Like a line at a ticket
+          counter — the first person to arrive is the first to be served. Queues are used in scheduling, BFS, and
+          buffering.</p>
+        <div class="complexity-badges">
+          <span class="badge badge-green">Enqueue: O(1)</span>
+          <span class="badge badge-red">Dequeue: O(1)</span>
+          <span class="badge badge-blue">Peek: O(1)</span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <input type="number" id="queue-input" placeholder="Enter a value…" aria-label="Queue value" />
+        <div class="btn-group">
+          <button class="btn btn-insert" id="queue-enqueue">
+            <span class="btn-icon">➡</span> Enqueue
+          </button>
+          <button class="btn btn-delete" id="queue-dequeue">
+            <span class="btn-icon">⬅</span> Dequeue
+          </button>
+          <button class="btn btn-display" id="queue-display">
+            <span class="btn-icon">👁</span> Display
+          </button>
+        </div>
+      </div>
+      <div class="viz-label">Queue Visualization <span class="capacity">(Max 10)</span></div>
+      <div class="visualization visualization-queue" id="queue-viz"></div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-value" id="queue-front">-1</span>
+          <span class="stat-label">Front</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="queue-rear">-1</span>
+          <span class="stat-label">Rear</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="queue-size">0</span>
+          <span class="stat-label">Size / 10</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="queue-ops">0</span>
+          <span class="stat-label">Operations</span>
+        </div>
+      </div>
+      <div class="log-panel">
+        <div class="log-header"><span class="log-icon">📋</span> Operation Log</div>
+        <div class="log-body" id="queue-log"><span class="log-empty">No operations yet…</span></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="app-footer">
+    <p>Built by <strong>Subham Kumar (25BCS10111)</strong> and <strong>Subham Panigarhi (25BCS12639)</strong></p>
+    <p><strong>Section: 25BCS205(A)</strong></p>
+    <p>For <strong>Navreet Kaur Mam</strong></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
