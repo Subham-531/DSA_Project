@@ -4,21 +4,21 @@
    Theme toggle · Ripple · Stats · Logs
    ══════════════════════════════════════════════════════ */
 
-// ─── Particles ───
-(function initParticles() {
-  const c = document.getElementById('particles');
-  for (let i = 0; i < 35; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.left = Math.random() * 100 + '%';
-    const s = 3 + Math.random() * 6;
-    p.style.width = p.style.height = s + 'px';
-    p.style.animationDuration = (14 + Math.random() * 22) + 's';
-    p.style.animationDelay = (Math.random() * 18) + 's';
-    p.style.opacity = (.3 + Math.random() * .4).toString();
-    c.appendChild(p);
-  }
-})();
+// ─── Pixel Snow Background ───
+initPixelSnow('pixel-snow-container', {
+  color: '#ffffff',
+  flakeSize: 0.01,
+  minFlakeSize: 1.25,
+  pixelResolution: 200,
+  speed: 1.25,
+  density: 0.3,
+  direction: 125,
+  brightness: 1,
+  depthFade: 8,
+  farPlane: 20,
+  gamma: 0.4545,
+  variant: 'square'
+});
 
 // ═══════════════════════════════════════
 // GLOBAL SETTINGS

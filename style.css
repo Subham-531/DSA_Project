@@ -75,18 +75,22 @@ body {
   transition: background .5s ease, color .4s ease;
 }
 
-/* ─── Particles ─── */
-#particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-.particle {
-  position: absolute; width: 6px; height: 6px;
-  background: var(--particle-color); border-radius: 50%;
-  animation: floatUp linear infinite;
+/* ─── Pixel Snow Background ─── */
+#pixel-snow-container { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+.pixel-snow-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  contain: layout style paint;
 }
-@keyframes floatUp {
-  0%   { transform: translateY(100vh) scale(0); opacity: 0; }
-  10%  { opacity: .8; }
-  90%  { opacity: .8; }
-  100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+.pixel-snow-container canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 /* ─── Header ─── */
