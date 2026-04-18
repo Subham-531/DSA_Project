@@ -40,7 +40,7 @@ projectcpp/
 ├── index.html                   # Main HTML structure
 ├── style.css                    # Complete stylesheet (dark/light themes)
 ├── app.js                       # All application logic & animations
-├── menu_LL_Stack_queue.cpp      # Original C++ console program
+├── menu.cpp                     # Original C++ console program
 ├── README.md                    # This file
 └── .gitignore                   # Git ignore rules
 ```
