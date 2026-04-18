@@ -1,32 +1,53 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="DSA Project — Interactive Linked List, Stack & Queue visualizer with live animations." />
+  <meta name="description"
+    content="DSA Project — Interactive Linked List, Stack & Queue visualizer with live animations." />
   <title>DSA Project — Linked List · Stack · Queue</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <!-- ─── Toast container ─── -->
   <div id="toast-container"></div>
 
-  <!-- ─── Pixel Snow Background ─── -->
-  <div id="pixel-snow-container" class="pixel-snow-container" aria-hidden="true"></div>
+  <!-- 1. Add this canvas just after <body> opens -->
+  <canvas id="bg-canvas"></canvas>
 
-  <!-- ─── Header ─── -->
-  <header id="app-header">
-    <div class="header-row">
-      <div class="header-left">
-        <h1>⚡ DSA Project</h1>
-        <p class="subtitle">Linked List &middot; Stack &middot; Queue</p>
-      </div>
-      <div class="header-right">
+  <!-- ═══════════════════════════════════════════════════
+       HEADER / NAVBAR — Edit brand name, links below
+       ═══════════════════════════════════════════════════ -->
+  <header id="app-header" class="site-header">
+    <nav class="navbar" aria-label="Main navigation">
+      <!-- ── Logo / Brand ── -->
+      <a href="#" class="nav-brand" id="nav-brand">
+        <span class="nav-logo-icon">⚡</span>
+        <span class="nav-logo-text">DSA<span class="nav-logo-accent">Project</span></span>
+      </a>
+
+      <!-- ── Desktop Nav Links ── -->
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#panel-linkedlist" class="nav-link" data-tab="linkedlist">Linked List</a></li>
+        <li><a href="#panel-stack" class="nav-link" data-tab="stack">Stack</a></li>
+        <li><a href="#panel-queue" class="nav-link" data-tab="queue">Queue</a></li>
+      </ul>
+
+      <!-- ── Right Actions ── -->
+      <div class="nav-actions">
         <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle Theme">
           <span class="theme-icon" id="theme-icon">🌙</span>
         </button>
+        <!-- ── Mobile Hamburger ── -->
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
       </div>
-    </div>
+    </nav>
   </header>
 
   <!-- ─── Global Toolbar ─── -->
@@ -66,7 +87,9 @@
           <span class="info-card-icon">📖</span>
           <h3>About Linked List</h3>
         </div>
-        <p>A <strong>Linked List</strong> is a linear data structure where elements are stored in nodes. Each node contains data and a pointer to the next node. Unlike arrays, linked lists allow efficient insertion and deletion at any position.</p>
+        <p>A <strong>Linked List</strong> is a linear data structure where elements are stored in nodes. Each node
+          contains data and a pointer to the next node. Unlike arrays, linked lists allow efficient insertion and
+          deletion at any position.</p>
         <div class="complexity-badges">
           <span class="badge badge-green">Insert: O(1) / O(n)</span>
           <span class="badge badge-red">Delete: O(1) / O(n)</span>
@@ -87,8 +110,10 @@
       <div class="viz-label">Linked List Visualization</div>
       <div class="visualization" id="ll-viz"></div>
       <div class="stats-row">
-        <div class="stat-card"><span class="stat-value" id="ll-count">0</span><span class="stat-label">Nodes</span></div>
-        <div class="stat-card"><span class="stat-value" id="ll-ops">0</span><span class="stat-label">Operations</span></div>
+        <div class="stat-card"><span class="stat-value" id="ll-count">0</span><span class="stat-label">Nodes</span>
+        </div>
+        <div class="stat-card"><span class="stat-value" id="ll-ops">0</span><span class="stat-label">Operations</span>
+        </div>
       </div>
       <div class="log-panel">
         <div class="log-header"><span class="log-icon">📋</span> Operation Log</div>
@@ -103,7 +128,9 @@
           <span class="info-card-icon">📖</span>
           <h3>About Stack</h3>
         </div>
-        <p>A <strong>Stack</strong> follows the <em>Last In, First Out (LIFO)</em> principle. Think of a stack of plates — you can only add or remove the top plate. Stacks are used in function calls, undo mechanisms, and expression evaluation.</p>
+        <p>A <strong>Stack</strong> follows the <em>Last In, First Out (LIFO)</em> principle. Think of a stack of plates
+          — you can only add or remove the top plate. Stacks are used in function calls, undo mechanisms, and expression
+          evaluation.</p>
         <div class="complexity-badges">
           <span class="badge badge-green">Push: O(1)</span>
           <span class="badge badge-red">Pop: O(1)</span>
@@ -122,9 +149,12 @@
       <div class="viz-label">Stack Visualization <span class="capacity">(Max 10)</span></div>
       <div class="visualization visualization-stack" id="stack-viz"></div>
       <div class="stats-row">
-        <div class="stat-card"><span class="stat-value" id="stack-top">-1</span><span class="stat-label">Top Index</span></div>
-        <div class="stat-card"><span class="stat-value" id="stack-size">0</span><span class="stat-label">Size / 10</span></div>
-        <div class="stat-card"><span class="stat-value" id="stack-ops">0</span><span class="stat-label">Operations</span></div>
+        <div class="stat-card"><span class="stat-value" id="stack-top">-1</span><span class="stat-label">Top
+            Index</span></div>
+        <div class="stat-card"><span class="stat-value" id="stack-size">0</span><span class="stat-label">Size /
+            10</span></div>
+        <div class="stat-card"><span class="stat-value" id="stack-ops">0</span><span
+            class="stat-label">Operations</span></div>
       </div>
       <div class="log-panel">
         <div class="log-header"><span class="log-icon">📋</span> Operation Log</div>
@@ -139,7 +169,9 @@
           <span class="info-card-icon">📖</span>
           <h3>About Queue</h3>
         </div>
-        <p>A <strong>Queue</strong> follows the <em>First In, First Out (FIFO)</em> principle. Like a line at a ticket counter — the first person to arrive is the first to be served. Queues are used in scheduling, BFS, and buffering.</p>
+        <p>A <strong>Queue</strong> follows the <em>First In, First Out (FIFO)</em> principle. Like a line at a ticket
+          counter — the first person to arrive is the first to be served. Queues are used in scheduling, BFS, and
+          buffering.</p>
         <div class="complexity-badges">
           <span class="badge badge-green">Enqueue: O(1)</span>
           <span class="badge badge-red">Dequeue: O(1)</span>
@@ -158,10 +190,14 @@
       <div class="viz-label">Queue Visualization <span class="capacity">(Max 10)</span></div>
       <div class="visualization visualization-queue" id="queue-viz"></div>
       <div class="stats-row">
-        <div class="stat-card"><span class="stat-value" id="queue-front">-1</span><span class="stat-label">Front</span></div>
-        <div class="stat-card"><span class="stat-value" id="queue-rear">-1</span><span class="stat-label">Rear</span></div>
-        <div class="stat-card"><span class="stat-value" id="queue-size">0</span><span class="stat-label">Size / 10</span></div>
-        <div class="stat-card"><span class="stat-value" id="queue-ops">0</span><span class="stat-label">Operations</span></div>
+        <div class="stat-card"><span class="stat-value" id="queue-front">-1</span><span class="stat-label">Front</span>
+        </div>
+        <div class="stat-card"><span class="stat-value" id="queue-rear">-1</span><span class="stat-label">Rear</span>
+        </div>
+        <div class="stat-card"><span class="stat-value" id="queue-size">0</span><span class="stat-label">Size /
+            10</span></div>
+        <div class="stat-card"><span class="stat-value" id="queue-ops">0</span><span
+            class="stat-label">Operations</span></div>
       </div>
       <div class="log-panel">
         <div class="log-header"><span class="log-icon">📋</span> Operation Log</div>
@@ -171,13 +207,341 @@
 
   </main>
 
-  <footer id="app-footer">
-    <p>Built with ❤️ by <strong>Subham Kumar</strong> and <strong>Subham Panigarhi</strong></p>
-    <p>Submitted to <strong>Navreet Kaur Mam</strong></p>
+  <!-- ═══════════════════════════════════════════════════
+       FOOTER — Edit links, descriptions, social URLs below
+       ═══════════════════════════════════════════════════ -->
+  <footer id="app-footer" class="site-footer">
+    <div class="footer-glow" aria-hidden="true"></div>
+
+    <div class="footer-main">
+      <!-- ── Column 1: Brand ── -->
+      <div class="footer-col footer-brand-col">
+        <a href="#" class="footer-brand">
+          <span class="footer-logo-icon">⚡</span>
+          <span class="footer-logo-text">DSA<span class="footer-logo-accent">Project</span></span>
+        </a>
+        <!-- EDIT: Change tagline below -->
+        <p class="footer-tagline">Interactive visualizer for Linked Lists, Stacks &amp; Queues. Built with passion for
+          learning data structures.</p>
+        <p class="footer-credits">Built with ❤️ by Subham Kumar &amp; Subham Panigarhi</p>
+        <p class="footer-credits">For Navreet Kaur Mam</p>
+      </div>
+
+      <!-- ── Column 2: Quick Links ── -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Explore</h4>
+        <ul class="footer-links">
+          <li><a href="#panel-linkedlist">Linked List</a></li>
+          <li><a href="#panel-stack">Stack</a></li>
+          <li><a href="#panel-queue">Queue</a></li>
+        </ul>
+      </div>
+
+      <!-- ── Column 3: Resources ── -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Resources</h4>
+        <ul class="footer-links">
+          <!-- EDIT: Change resource links below -->
+          <li><a href="https://github.com/Subham-531" target="_blank" rel="noopener noreferrer">Source Code</a></li>
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+
+      <!-- ── Column 4: Connect / Social ── -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Connect</h4>
+        <div class="footer-social">
+          <!-- EDIT: Update social media URLs below -->
+          <a href="https://github.com/Subham-531" target="_blank" rel="noopener noreferrer" class="social-link"
+            aria-label="GitHub" title="GitHub">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 20.87c-3.37.73-4.08-1.63-4.08-1.63-.55-1.4-1.34-1.77-1.34-1.77-1.1-.75.08-.74.08-.74 1.21.09 1.85 1.24 1.85 1.24 1.08 1.85 2.83 1.31 3.52 1 .1-.78.42-1.32.76-1.62-2.69-.3-5.52-1.34-5.52-5.98 0-1.32.47-2.4 1.24-3.25-.12-.3-.54-1.54.12-3.2 0 0 1.01-.33 3.3 1.24a11.5 11.5 0 0 1 6.02 0c2.3-1.57 3.3-1.24 3.3-1.24.66 1.66.24 2.9.12 3.2a4.67 4.67 0 0 1 1.24 3.25c0 4.65-2.83 5.67-5.53 5.97.43.37.82 1.1.82 2.22l-.01 3.29c0 .32.22.69.83.57A12 12 0 0 0 12 .3" />
+            </svg>
+            <span>GitHub</span>
+          </a>
+          <a href="https://www.linkedin.com/in/subham-kumar-6b2b29216" target="_blank" rel="noopener noreferrer"
+            class="social-link" aria-label="LinkedIn" title="LinkedIn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05a3.74 3.74 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77A1.75 1.75 0 0 0 0 1.73v20.54A1.75 1.75 0 0 0 1.77 24h20.45A1.76 1.76 0 0 0 24 22.27V1.73A1.76 1.76 0 0 0 22.22 0z" />
+            </svg>
+            <span>LinkedIn</span>
+          </a>
+          <a href="https://www.instagram.com/subham_kr____/" target="_blank" rel="noopener noreferrer"
+            class="social-link" aria-label="Instagram" title="Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.97.25 2.43.41a4.07 4.07 0 0 1 1.51.98 4.07 4.07 0 0 1 .98 1.51c.17.46.36 1.26.41 2.43.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.97-.41 2.43a4.07 4.07 0 0 1-.98 1.51 4.07 4.07 0 0 1-1.51.98c-.46.17-1.26.36-2.43.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.97-.25-2.43-.41a4.07 4.07 0 0 1-1.51-.98 4.07 4.07 0 0 1-.98-1.51c-.17-.46-.36-1.26-.41-2.43C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.97.41-2.43a4.07 4.07 0 0 1 .98-1.51 4.07 4.07 0 0 1 1.51-.98c.46-.17 1.26-.36 2.43-.41C8.42 2.17 8.8 2.16 12 2.16M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63a6.23 6.23 0 0 0-2.25 1.47A6.23 6.23 0 0 0 .42 4.34C.13 5.1-.07 5.98.07 7.25.01 8.53 0 8.94 0 12.2s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91a6.23 6.23 0 0 0 1.47 2.25 6.23 6.23 0 0 0 2.25 1.47c.76.3 1.64.5 2.91.56C8.53 24 8.94 24 12.2 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a6.23 6.23 0 0 0 2.25-1.47 6.23 6.23 0 0 0 1.47-2.25c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a6.23 6.23 0 0 0-1.47-2.25A6.23 6.23 0 0 0 20.06.63C19.3.33 18.42.13 17.15.07 15.87.01 15.46 0 12.2 0H12zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm7.85-10.4a1.44 1.44 0 1 0-2.88 0 1.44 1.44 0 0 0 2.88 0z" />
+            </svg>
+            <span>Instagram</span>
+          </a>
+          <a href="mailto:subhamkumar21112006@gmail.com" class="social-link" aria-label="Email" title="Email">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
+            </svg>
+            <span>Email</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Bottom Copyright Bar ── -->
+    <div class="footer-bottom">
+      <div class="footer-bottom-inner">
+        <!-- EDIT: Change copyright text below -->
+        <p class="footer-copyright">&copy; 2026 DSAProject. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy</a>
+          <span class="footer-divider">·</span>
+          <a href="#">Terms</a>
+          <span class="footer-divider">·</span>
+          <a href="#">Sitemap</a>
+        </div>
+      </div>
+    </div>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="pixel-snow.js"></script>
   <script src="app.js"></script>
+
+  <!-- 3. Add this entire script before </body> -->
+  <script>
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, bgNodes, bgEdges, bgParticles, bgMode = 'graph', animId;
+
+    /* Change these to match your site's theme */
+    const DARK = {
+      node: ['#8a63ff','#4ec9b0','#61dafb','#f97316','#a78bfa'],
+      edge: 'rgba(138,99,255,0.13)',
+      keyword: 'rgba(180,160,255,0.11)',
+    };
+    const LIGHT = {
+      node: ['#6c47e8','#0e9f6e','#2563eb','#d97706','#7c3aed'],
+      edge: 'rgba(108,71,232,0.10)',
+      keyword: 'rgba(80,50,180,0.09)',
+    };
+
+    /* Set this to true/false based on your site's current theme */
+    let isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+
+    function pal() { return isDark ? DARK : LIGHT; }
+    function rand(a, b) { return a + Math.random() * (b - a); }
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    /* ── BUILD MODES ── */
+    function makeGraph() {
+      const count = Math.floor(W * H / 20000);
+      const ns = Array.from({ length: count }, () => ({
+        x: rand(40, W - 40), y: rand(40, H - 40),
+        vx: rand(-0.2, 0.2), vy: rand(-0.2, 0.2),
+        r: rand(5, 10), color: pick(pal().node),
+        label: pick(['10','42','7','∞','N','n+1','O(n)','→','⊕','null','*','#']),
+        pulse: Math.random(), pd: 1
+      }));
+      const es = [];
+      for (let i = 0; i < ns.length; i++) {
+        let bj = null, bd = Infinity;
+        for (let j = 0; j < ns.length; j++) {
+          if (i === j) continue;
+          const d = Math.hypot(ns[i].x - ns[j].x, ns[i].y - ns[j].y);
+          if (d < bd) { bd = d; bj = j; }
+        }
+        if (bj !== null && bd < 240) es.push([i, bj]);
+        if (Math.random() < 0.25) {
+          const j = Math.floor(Math.random() * ns.length);
+          if (j !== i && Math.hypot(ns[i].x - ns[j].x, ns[i].y - ns[j].y) < 300) es.push([i, j]);
+        }
+      }
+      return { nodes: ns, edges: es };
+    }
+
+    function makeTree() {
+      const ns = [], es = [];
+      let id = 0;
+      function add(x, y) {
+        ns.push({ x, y, vx: 0, vy: 0, r: 8, color: pick(pal().node), label: String(id++), pulse: Math.random(), pd: 1 });
+        return ns.length - 1;
+      }
+      function build(pid, x, y, spread, lvl) {
+        if (lvl > 5) return;
+        const c = Math.random() < 0.3 ? 3 : 2;
+        const step = spread / (c - 1 + 0.001);
+        for (let i = 0; i < c; i++) {
+          const cx = x - spread / 2 + i * step + rand(-10, 10), cy = y + rand(85, 110);
+          const cid = add(cx, cy);
+          if (pid !== null) es.push([pid, cid]);
+          build(cid, cx, cy, spread * 0.5, lvl + 1);
+        }
+      }
+      const r = add(W / 2, 60);
+      build(r, W / 2, 60, Math.min(W * 0.75, 620), 1);
+      return { nodes: ns, edges: es };
+    }
+
+    function makeFlow() {
+      const labels = ['Start','Push','Pop','Search','Insert','Delete','End','Link','Array','Hash'];
+      const ns = labels.map(label => ({
+        x: rand(W * 0.08, W * 0.92), y: rand(H * 0.08, H * 0.92),
+        vx: rand(-0.12, 0.12), vy: rand(-0.12, 0.12),
+        r: 9, color: pick(pal().node), label, pulse: Math.random(), pd: 1
+      }));
+      const es = [];
+      for (let i = 0; i < ns.length - 1; i++) es.push([i, i + 1]);
+      for (let i = 0; i < ns.length; i++) {
+        if (Math.random() < 0.35) {
+          const j = Math.floor(Math.random() * ns.length);
+          if (j !== i) es.push([i, j]);
+        }
+      }
+      return { nodes: ns, edges: es };
+    }
+
+    /* ── INIT ── */
+    function initBg() {
+      cancelAnimationFrame(animId);
+      const g = bgMode === 'graph' ? makeGraph() : bgMode === 'tree' ? makeTree() : makeFlow();
+      bgNodes = g.nodes;
+      bgEdges = g.edges;
+      bgParticles = [];
+      bgEdges.forEach(e => {
+        if (Math.random() < 0.55)
+          bgParticles.push({ ei: e, t: Math.random(), spd: rand(0.0015, 0.005), color: bgNodes[e[0]].color });
+      });
+      window._kws = ['Linked List','Stack','Queue','O(log n)','BFS','DFS','Heap','Hash Map','Array','Graph','O(n²)','O(1)'].map(text => ({
+        text, x: rand(80, W - 80), y: rand(40, H - 40), vx: rand(-0.1, 0.1), vy: rand(-0.1, 0.1), a: rand(0.07, 0.16)
+      }));
+      loop();
+    }
+
+    function resizeBg() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      initBg();
+    }
+
+    /* ── RENDER LOOP ── */
+    function loop() {
+      animId = requestAnimationFrame(loop);
+      const p = pal();
+      ctx.clearRect(0, 0, W, H);
+
+      /* edges */
+      bgEdges.forEach(([a, b]) => {
+        const na = bgNodes[a], nb = bgNodes[b]; if (!na || !nb) return;
+        ctx.beginPath(); ctx.moveTo(na.x, na.y); ctx.lineTo(nb.x, nb.y);
+        ctx.strokeStyle = p.edge; ctx.lineWidth = 1; ctx.stroke();
+      });
+
+      /* particles */
+      bgParticles.forEach(pt => {
+        pt.t += pt.spd; if (pt.t > 1) pt.t = 0;
+        const [a, b] = pt.ei, na = bgNodes[a], nb = bgNodes[b]; if (!na || !nb) return;
+        const x = na.x + (nb.x - na.x) * pt.t, y = na.y + (nb.y - na.y) * pt.t;
+        ctx.beginPath(); ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = pt.color; ctx.globalAlpha = 0.65; ctx.fill(); ctx.globalAlpha = 1;
+      });
+
+      /* nodes */
+      bgNodes.forEach(n => {
+        n.pulse += 0.035 * n.pd; if (n.pulse > 1 || n.pulse < 0) n.pd *= -1;
+        if (bgMode !== 'tree') {
+          n.x += n.vx; n.y += n.vy;
+          if (n.x < n.r || n.x > W - n.r) n.vx *= -1;
+          if (n.y < n.r || n.y > H - n.r) n.vy *= -1;
+        }
+        /* glow */
+        const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r + 12 + n.pulse * 5);
+        grd.addColorStop(0, n.color + '99'); grd.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(n.x, n.y, n.r + 12 + n.pulse * 5, 0, Math.PI * 2);
+        ctx.fillStyle = grd; ctx.fill();
+        /* circle */
+        ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = n.color; ctx.fill();
+        ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,60,0.15)';
+        ctx.lineWidth = 1; ctx.stroke();
+        /* label */
+        if (n.r >= 7) {
+          ctx.fillStyle = '#fff';
+          ctx.font = `bold ${Math.max(8, n.r - 1)}px monospace`;
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText((n.label || '').slice(0, 3), n.x, n.y);
+        }
+      });
+
+      /* floating keywords */
+      (window._kws || []).forEach(f => {
+        f.x += f.vx; f.y += f.vy;
+        if (f.x < 60 || f.x > W - 60) f.vx *= -1;
+        if (f.y < 30 || f.y > H - 30) f.vy *= -1;
+        ctx.font = '12px monospace';
+        ctx.fillStyle = isDark
+          ? `rgba(180,160,255,${f.a})`
+          : `rgba(80,50,180,${f.a})`;
+        ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+        ctx.fillText(f.text, f.x, f.y);
+      });
+    }
+
+    /* ── PUBLIC HELPERS ── */
+    window.setBgTheme = function(dark) { isDark = dark; };
+    window.setBgMode = function(m) { bgMode = m; initBg(); };
+
+    window.addEventListener('resize', resizeBg);
+    resizeBg();
+  </script>
+
+  <!-- ── Hamburger Menu + Nav Link Navigation ── -->
+  <script>
+    (() => {
+      const hamburger = document.getElementById('nav-hamburger');
+      const navLinks = document.getElementById('nav-links');
+
+      // ── Hamburger toggle ──
+      if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => {
+          const isOpen = hamburger.getAttribute('aria-expanded') === 'true';
+          hamburger.setAttribute('aria-expanded', String(!isOpen));
+          navLinks.classList.toggle('open');
+        });
+      }
+
+      // ── Helper: switch to a tab by name ──
+      function switchTab(tabName) {
+        const tabBtn = document.querySelector(`.tab[data-tab="${tabName}"]`);
+        if (tabBtn) tabBtn.click(); // reuse existing tab logic in app.js
+
+        // Scroll the main area into view
+        const panel = document.getElementById('panel-' + tabName);
+        if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      // ── Header nav links ──
+      document.querySelectorAll('.nav-link[data-tab]').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          switchTab(link.dataset.tab);
+          // Close mobile menu if open
+          if (hamburger) {
+            hamburger.setAttribute('aria-expanded', 'false');
+            navLinks.classList.remove('open');
+          }
+        });
+      });
+
+      // ── Footer links (Explore column) ──
+      document.querySelectorAll('.footer-links a[href^="#panel-"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const tabName = link.getAttribute('href').replace('#panel-', '');
+          switchTab(tabName);
+        });
+      });
+    })();
+  </script>
 </body>
+
 </html>

@@ -4,22 +4,6 @@
    Theme toggle · Ripple · Stats · Logs
    ══════════════════════════════════════════════════════ */
 
-// ─── Pixel Snow Background ───
-initPixelSnow('pixel-snow-container', {
-  color: '#ffffff',
-  flakeSize: 0.01,
-  minFlakeSize: 1.25,
-  pixelResolution: 200,
-  speed: 1.25,
-  density: 0.3,
-  direction: 125,
-  brightness: 1,
-  depthFade: 8,
-  farPlane: 20,
-  gamma: 0.4545,
-  variant: 'square'
-});
-
 // ═══════════════════════════════════════
 // GLOBAL SETTINGS
 // ═══════════════════════════════════════
@@ -147,6 +131,9 @@ function setTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
   localStorage.setItem('dsa-theme', theme);
+  if (typeof window.setBgTheme === 'function') {
+    window.setBgTheme(theme === 'dark');
+  }
 }
 
 themeToggle.addEventListener('click', () => {
@@ -235,7 +222,15 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
     tab.setAttribute('aria-selected', 'true');
-    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    const tabData = tab.dataset.tab;
+    document.getElementById('panel-' + tabData).classList.add('active');
+    
+    // Switch background mode
+    if (typeof window.setBgMode === 'function') {
+      if (tabData === 'linkedlist') window.setBgMode('graph');
+      else if (tabData === 'stack') window.setBgMode('flow');
+      else if (tabData === 'queue') window.setBgMode('tree');
+    }
   });
 });
 
